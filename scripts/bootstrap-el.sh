@@ -3,6 +3,9 @@
 # setup puppet repo
 sudo yum install -y http://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
 
+# install any updates
+sudo yum update -y
+
 # install puppet server
 sudo yum install -y puppetserver puppet-agent git rsync vim-enhanced tree
 
@@ -11,8 +14,8 @@ sudo yum install -y puppetserver puppet-agent git rsync vim-enhanced tree
 fw_state=$(systemctl is-enabled firewalld)
 
 if [ "$fw_state" = "disabled" ]; then
-  sudo systemctl enable firewalld
-  sudo systemctl start firewalld
+  sudo /bin/systemctl enable firewalld
+  sudo /bin/systemctl start firewalld
 else
   echo "firewalld service is already $fw_state."
 fi
@@ -21,14 +24,12 @@ echo "adding firewall rules ..."
 sudo firewall-cmd --zone=public --add-port=8140/tcp --permanent
 sudo firewall-cmd --reload
 
-# Add master to hosts file
-echo "updating /etc/hosts ..."
-echo "192.168.250.120 puppetserver.vagrant.box" >> /etc/hosts
-
 # Limit memory usage
 echo "limiting java memory usage for puppet ..."
-sudo sed -i 's/JAVA_ARGS="-Xms2g -Xmx2g -XX:MaxPermSize=256m"/# JAVA_ARGS="-Xms2g -Xmx2g -XX:MaxPermSize=256m"/' /etc/sysconfig/puppetserver
-sudo sed -i '10i JAVA_ARGS="-Xms512m -Xmx512m"' /etc/sysconfig/puppetserver
+sudo sed -i 's/2g/512m/g' /etc/sysconfig/puppetserver
+
+# Configure auto-signing
+echo "*.vagrant.box" >> sudo tee /etc/puppetlabs/puppet/autosign.conf
 
 # Installing hiera-eyaml
 echo "installing hiera-eyaml ..."
