@@ -29,11 +29,20 @@ echo "limiting java memory usage for puppet ..."
 sudo sed -i 's/2g/512m/g' /etc/sysconfig/puppetserver
 
 # Configure auto-signing
-echo "*.vagrant.box" >> sudo tee /etc/puppetlabs/puppet/autosign.conf
+#echo "*.vagrant.box" >> sudo tee /etc/puppetlabs/puppet/autosign.conf
+sudo cp /home/vagrant/sync/scripts/autosign.conf /etc/puppetlabs/puppet
+
+# Setup hiera
+echo "configuring hiera ..."
+sudo cp /home/vagrant/sync/scripts/hiera.yaml /etc/puppetlabs/puppet/
 
 # Installing hiera-eyaml
-echo "installing hiera-eyaml ..."
 sudo /opt/puppetlabs/bin/puppetserver gem install hiera-eyaml --no-ri --no-rdoc
+sudo cp -r /home/vagrant/sync/keys /etc/puppetlabs
+sudo chmod 0400 /etc/puppetlabs/keys/private_key.pkcs7.pem
+sudo chmod 0400 /etc/puppetlabs/keys/public_key.pkcs7.pem
+sudo chown puppet:puppet /etc/puppetlabs/keys/private_key.pkcs7.pem
+sudo chown puppet:puppet /etc/puppetlabs/keys/public_key.pkcs7.pem
 
 # Setup r10k
 echo "installing r10k ..."

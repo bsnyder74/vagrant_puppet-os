@@ -25,3 +25,6 @@ echo "adding firewall rules ..."
 sudo firewall-cmd --zone=public --add-port=8081/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=5432/tcp --permanent
 sudo firewall-cmd --reload
+
+# puppet run
+sudo /opt/puppetlabs/puppet/bin/puppet agent -t --server=puppetserver.vagrant.box

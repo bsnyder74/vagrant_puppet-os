@@ -1,0 +1,20 @@
+---
+:backends:
+  - eyaml
+  - yaml
+:hierarchy:
+  - "nodes/%{::trusted.certname}"
+  - "roles/%{::custom_role}"
+  - common
+
+:eyaml:
+  :datadir:
+  :extension: eyaml
+  :pkcs7_private_key: "/etc/puppetlabs/keys/private_key.pkcs7.pem"
+  :pkcs7_public_key: "/etc/puppetlabs/keys/public_key.pkcs7.pem"
+:yaml:
+# datadir is empty here, so hiera uses its defaults:
+# - /etc/puppetlabs/code/environments/%{environment}/hieradata on *nix
+# - %CommonAppData%\PuppetLabs\code\environments\%{environment}\hieradata on Windows
+# When specifying a datadir, make sure the directory exists.
+  :datadir:
